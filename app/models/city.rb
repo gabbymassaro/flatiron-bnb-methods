@@ -16,4 +16,22 @@ class City < ActiveRecord::Base
       end_date, start_date
     ])
   end
+
+  def self.highest_ratio_res_to_listings
+    City
+      .select("cities.*, COUNT(reservations.id) / COUNT(DISTINCT listings.id) AS ratio")
+      .joins(neighborhoods: { listings: :reservations })
+      .group("cities.id")
+      .order("ratio DESC")
+      .first
+  end
+
+  def self.most_res
+    City
+    .select("cities.*, COUNT(reservations.id) AS res_count")
+    .joins(neighborhoods: { listings: :reservations })
+    .group("cities.id")
+    .order("res_count DESC")
+    .first
+  end
 end
