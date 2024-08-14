@@ -17,4 +17,21 @@ class Neighborhood < ActiveRecord::Base
     ])
   end
 
+  def self.highest_ratio_res_to_listings
+    Neighborhood
+    .select("neighborhoods.*, COUNT(reservations.id) / COUNT(DISTINCT listings.id) AS ratio")
+    .joins(listings: :reservations)
+    .group("neighborhoods.id")
+    .order("ratio DESC")
+    .first
+  end
+
+  def self.most_res
+    Neighborhood
+    .select("neighborhoods.*, COUNT(reservations.id) AS res_count")
+    .joins(listings: :reservations)
+    .group("neighborhoods.id")
+    .order("res_count DESC")
+    .first
+  end
 end
